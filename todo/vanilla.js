@@ -21,7 +21,8 @@ function addTask() {
     if (taskInput.value !== "") {
         const taskObject = {
             id: tasksArray.length + 1,
-            taskName: taskInput.value
+            taskName: taskInput.value,
+            completed: false,
         };
         tasksArray.push(taskObject);
         taskInput.value = ''; // Clear the input field after adding the task
@@ -40,13 +41,32 @@ function renderTasks() {
         const deleteBtn = document.createElement('button');
         const editBtn = document.createElement('button');
         const btnContainer = document.createElement('div');
+        const checkbox = document.createElement('input');
+
         deleteBtn.textContent = 'Delete'
         deleteBtn.className = 'button-75'
         editBtn.textContent = 'Edit'
         editBtn.className = 'button-63'
         btnContainer.id = 'btn-container'
-
+        checkbox.type = "checkbox";
         span.textContent = task.taskName;
+
+        checkbox.checked = task.completed;
+
+        checkbox.addEventListener('click', ()=>{
+            task.completed = checkbox.checked;
+            updateTasks();
+        });
+
+
+        if (task.completed) {
+            span.style.textDecoration = 'line-through';
+            span.style.textDecorationColor = "#000000"
+            span.style.textDecorationThickness = "0.25em"
+        } else {
+            span.style.textDecoration = 'none';
+        }
+
         deleteBtn.addEventListener('click', () => {
             console.log('deleted')
             deleteTask(task?.id);
@@ -55,7 +75,9 @@ function renderTasks() {
             editTask(task?.id);
         })
 
-        btnContainer.append(editBtn, deleteBtn);
+      
+
+        btnContainer.append(editBtn, deleteBtn, checkbox);
 
         li.append(span, btnContainer)
 
@@ -74,7 +96,7 @@ function editTask(id) {
     const newTaskName = prompt('Enter Task Name !');
 
     if (newTaskName !== '') {
-       tasksArray.forEach((task) => {
+        tasksArray.forEach((task) => {
             if (task.id === id) task.taskName = newTaskName;
         });
         updateTasks();
